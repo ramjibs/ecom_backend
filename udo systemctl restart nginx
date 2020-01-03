@@ -1,0 +1,17 @@
+[0;1;32m●[0m nginx.service - A high performance web server and a reverse proxy server
+   Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+   Active: [0;1;32mactive (running)[0m since Sun 2019-04-07 10:55:02 UTC; 6 days ago
+  Process: 27442 ExecReload=/usr/sbin/nginx -g daemon on; master_process on; -s reload (code=exited, status=0/SUCCESS)
+ Main PID: 1253 (nginx)
+    Tasks: 2
+   Memory: 9.1M
+      CPU: 1.142s
+   CGroup: /system.slice/nginx.service
+           ├─ 1253 nginx: master process /usr/sbin/nginx -g daemon on; master_process on
+           └─26894 nginx: worker process                           
+
+Apr 14 07:23:00 ip-172-31-28-125 systemd[1]: Reloading A high performance web server and a reverse proxy server.
+Apr 14 07:23:00 ip-172-31-28-125 systemd[1]: Reloaded A high performance web server and a reverse proxy server.
+Apr 14 07:50:25 ip-172-31-28-125 systemd[1]: Reloading A high performance web server and a reverse proxy server.
+Apr 14 07:50:25 ip-172-31-28-125 systemd[1]: Reloaded A high performance web server and a reverse proxy server.
+Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.

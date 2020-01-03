@@ -1,0 +1,125 @@
+CREATE TABLE USERS(USER_ID SERIAL CONSTRAINT PK_USER PRIMARY KEY,
+				 USERNAME VARCHAR(30) CONSTRAINT CHK_MIN_LEN_UN CHECK(LENGTH(USERNAME) >= 3) NOT NULL,
+				 EMAIL_ID VARCHAR(150) CONSTRAINT UNQ_EMAIL UNIQUE NOT NULL,
+				 PHONE_NUMBER VARCHAR(15) CONSTRAINT UNQ_PH UNIQUE NOT NULL,
+				 DATE_OF_BIRTH DATE NOT NULL,
+				 CREATED_ON TIMESTAMPTZ DEFAULT NOW(),
+				 UPDATED_ON TIMESTAMPTZ DEFAULT NOW(),
+				 GENDER CHAR(1) NOT NULL CONSTRAINT CHK_GNDR CHECK(GENDER IN ('m','f','o')),
+				 CONSTRAINT CHK_MIN_LEN_PH CHECK(LENGTH(PHONE_NUMBER) >= 10),
+				 CONSTRAINT CHK_MIN_LEN_EMAIL CHECK(LENGTH(EMAIL_ID) >= 7),
+				 CONSTRAINT CHK_ONLY_NUM_PH CHECK(CAST(PHONE_NUMBER AS BIGINT)<= 9999999999 AND CAST(PHONE_NUMBER AS BIGINT)>= 1000000000));
+
+insert into users(username,email_id,phone_number,date_of_birth,gender) values ('sen','senthilbalaji.g@gmail.com',
+                '9750187663','2018-10-21', 'm');
+
+insert into users(username,email_id,phone_number,date_of_birth,gender) values ('angel priya','angel.priya@gmail.com',
+                '1234567890','2018-10-21', 'f');
+
+insert into users(username,email_id,phone_number,date_of_birth,gender) values ('someUser','someUser@gmail.com',
+                '9865375521','2018-10-21', 'o');
+
+-- address
+CREATE TABLE USER_ADDRESS(
+USER_ID INT REFERENCES USERS(USER_ID),
+ID SERIAL CONSTRAINT PK_ADRS PRIMARY KEY,
+TITLE VARCHAR(100) NOT NULL,
+LINE_1 VARCHAR(400) NOT NULL,
+LINE_2 VARCHAR(400) NOT NULL,
+CITY VARCHAR(300) NOT NULL,
+STATE VARCHAR(150) NOT NULL,
+LANDMARK VARCHAR(450),
+PINCODE VARCHAR(6) NOT NULL, 
+LATITUDE VARCHAR(50),
+LONGITUDE VARCHAR(50)
+IS_PRIMARY INT, 
+CREATED_ON TIMESTAMPTZ DEFAULT NOW(),
+UPDATED_ON TIMESTAMPTZ DEFAULT NOW()
+);
+insert into user_address(user_id,title, line_1, line_2, city, state, landmark,pincode)
+values(6,'home','299/1, sathya colont 10th st','kattabomman kadu, mannarai',
+	   'tirupur','tamilnadu','near revathi theatre',641607)
+--user_address_user_id_fkey
+
+
+CREATE TABLE RATING_AND_REVIEW(
+    ID  SERIAL,
+    USER_ID INTEGER REFERENCES USERS(USER_ID),
+    PRODUCT_ID INTEGER REFERENCES PRODUCT(ID),
+    RATING NUMERIC DEFAULT 0 CONSTRAINT CHECK_RATING CHECK((RATING<=5) AND (RATING>0)),
+    REVIEW_TITLE VARCHAR(100),
+    REVIEW_DESCRIPTION VARCHAR(400),
+    CREATED_ON TIMESTAMPTZ DEFAULT NOW(),
+    UPDATED_ON TIMESTAMPTZ DEFAULT NOW(),
+	IS_DELETED BOOL DEFAULT FALSE
+    );
+
+
+    insert into rating_and_review (user_id,product_id,rating,review_title,review_description) values (1,1,2.3,'good','product was good');
+    insert into rating_and_review (user_id,product_id,rating,review_title,review_description) values (1,2,4,'good','product was good');
+    insert into rating_and_review (user_id,product_id,rating,review_title,review_description) values (1,3,2,'good','product was good');
+    insert into rating_and_review (user_id,product_id,rating,review_title,review_description) values (2,1,5,'good','product was good');
+    insert into rating_and_review (user_id,product_id,rating,review_title,review_description) values (3,1,1,'good','product was good');
+    insert into rating_and_review (user_id,product_id,rating,review_title,review_description) values (4,1,0,'good','product was good');
+    insert into rating_and_review (user_id,product_id,rating,review_title,review_description) values (1,5,3,'good','product was good');
+    insert into rating_and_review (user_id,product_id,rating,review_title,review_description) values (1,1,4.3,'good','product was good');
+    insert into rating_and_review (user_id,product_id,rating,review_title,review_description) values (6,2,1.3,'good','product was good');
+    insert into rating_and_review (user_id,product_id,rating,review_title,review_description) values (3,2,4.8,'good','product was good');
+    
+
+
+
+CREATE TABLE PRODUCT
+(
+ID SERIAL  CONSTRAINT PRODUCT_PK PRIMARY KEY,
+TITLE VARCHAR(100),
+ISBN VARCHAR(100) NOT NULL,
+PAGE_COUNT INTEGER,
+PUBLISHERS VARCHAR[100],
+IMAGE_URL VARCHAR(800),
+AUTHORS VARCHAR[10],
+CATEGORIES VARCHAR[200],
+ORIGINAL_PRICE  INTEGER,D
+SPECIAL_PRICE  INTEGER,
+CREATED_ON TIMESTAMPTZ DEFAULT NOW(),
+UPDATED_ON TIMESTAMPTZ DEFAULT NOW(),
+IS_DELETED BOOL DEFAULT FALSE,
+BOOK_TYPE VARCHAR(100),
+LANGUAGE VARCHAR(200),
+DISCOUNT INTEGER,
+TAGS VARCHAR(3000),
+IN_STOCK INTEGER,
+IS_AVAILABLE BOOL,
+DESCRIPTION VARCHAR(5000),
+PRODUCT_TYPE VARCHAR(300)
+);
+
+
+insert into product(title,isbn,page_count,image_url,authors,categories,original_price) 
+values (
+'title',
+1884777686,
+362,
+'https://hhaa/abc.jpg',
+'{"Michael J. Barlotta","Jason R. Weiss"}',
+'{"PowerBuilder"}',
+857
+);
+
+
+CREATE TABLE CART
+(
+PRODUCT_ID INTEGER REFERENCES PRODUCT(ID),
+USER_ID INTEGER REFERENCES USERS(USER_ID),
+ID  SERIAL PRIMARY KEY,
+QUANTITY INTEGER NOT NULL DEFAULT 1,
+IS_DELETED BOOL DEFAULT 'FALSE',
+CREATED_ON TIMESTAMPTZ DEFAULT NOW(),
+UPDATED_ON TIMESTAMPTZ DEFAULT NOW()
+);
+
+INSERT INTO CART(PRODUCT_ID, USER_ID) VALUES(1,6);
+
+
+
+create table wallet(wallet_id serial primary key,user_id integer references users(user_id),product_id integer references product(prodcut_id),quantity integer,meta_json varchar(200),transaction_date timestamp default now());
